@@ -1,8 +1,13 @@
 <?php
 include 'db_connect.php';
+
+// Автоматическое обновление страницы каждые 30 секунд
+header("Refresh: 30");
+
 $total_clients = $conn->query("SELECT COUNT(*) FROM clients")->fetch_row()[0];
 $active_projects = $conn->query("SELECT COUNT(*) FROM projects WHERE status='В работе'")->fetch_row()[0];
 ?>
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -14,13 +19,13 @@ $active_projects = $conn->query("SELECT COUNT(*) FROM projects WHERE status='В 
     <div class="container mt-5">
         <h1 class="text-center mb-4">WebStar CRM</h1>
         
-        <!-- Статистика -->
+        <!-- Статистика с автоматическим обновлением -->
         <div class="row mb-4">
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Клиенты</h5>
-                        <p class="display-4"><?php echo $total_clients; ?></p>
+                        <p class="display-4" id="client-count"><?= $total_clients ?></p>
                     </div>
                 </div>
             </div>
@@ -28,7 +33,7 @@ $active_projects = $conn->query("SELECT COUNT(*) FROM projects WHERE status='В 
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Активные проекты</h5>
-                        <p class="display-4"><?php echo $active_projects; ?></p>
+                        <p class="display-4" id="project-count"><?= $active_projects ?></p>
                     </div>
                 </div>
             </div>
@@ -40,5 +45,20 @@ $active_projects = $conn->query("SELECT COUNT(*) FROM projects WHERE status='В 
             <a href="projects.php" class="btn btn-success btn-lg">Проекты</a>
         </div>
     </div>
+
+    <script>
+    // AJAX-обновление счетчиков без перезагрузки страницы
+    function updateCounters() {
+        fetch('api/get_counts.php')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('client-count').textContent = data.total_clients;
+                document.getElementById('project-count').textContent = data.active_projects;
+            });
+    }
+
+    // Обновляем каждые 10 секунд
+    setInterval(updateCounters, 10000);
+    </script>
 </body>
 </html>

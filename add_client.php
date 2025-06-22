@@ -1,3 +1,16 @@
+<?php
+session_start();
+if (isset($_SESSION['errors'])) {
+    foreach ($_SESSION['errors'] as $field => $message) {
+        echo '<div class="alert alert-danger">' . htmlspecialchars($message) . '</div>';
+    }
+    unset($_SESSION['errors']);
+}
+if (isset($_SESSION['old'])) {
+    $old = $_SESSION['old'];
+    unset($_SESSION['old']);
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>

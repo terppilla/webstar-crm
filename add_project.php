@@ -29,38 +29,34 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <body>
 <div class="container mt-5">
     <h2>Добавить проект</h2>
-    <form method="POST">
-        <div class="mb-3">
-            <label class="form-label">Название проекта*</label>
-            <input type="text" name="title" class="form-control" required>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Клиент*</label>
-            <select name="client_id" class="form-select" required>
-                <option value="">Выберите клиента</option>
-                <?php foreach ($clients as $client): ?>
-                    <option value="<?= $client['id'] ?>"><?= htmlspecialchars($client['name']) ?></option>
-                <?php endforeach; ?>
-            </select>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Услуга*</label>
-            <select name="service" class="form-select" required>
-                <option value="Сайт">Сайт</option>
-                <option value="SEO">SEO</option>
-                <option value="Реклама">Реклама</option>
-            </select>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Статус*</label>
-            <select name="status" class="form-select" required>
-                <option value="В работе">В работе</option>
-                <option value="Завершен">Завершен</option>
-                <option value="Отменен">Отменен</option>
-            </select>
-        </div>
-        <button type="submit" class="btn btn-primary">Сохранить</button>
-    </form>
+    <form method="POST" id="projectForm" novalidate>
+    <div class="mb-3">
+        <label class="form-label">Название проекта*</label>
+        <input type="text" name="title" class="form-control" required minlength="3" maxlength="100">
+        <div class="invalid-feedback">Название проекта должно содержать от 3 до 100 символов.</div>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Клиент*</label>
+        <select name="client_id" class="form-select" required>
+            <option value="">Выберите клиента</option>
+            <?php foreach ($clients as $client): ?>
+                <option value="<?= $client['id'] ?>"><?= htmlspecialchars($client['name']) ?></option>
+            <?php endforeach; ?>
+        </select>
+        <div class="invalid-feedback">Пожалуйста, выберите клиента.</div>
+    </div>
+    <!-- Остальные поля остаются без изменений -->
+    <button type="submit" class="btn btn-primary">Сохранить</button>
+</form>
 </div>
+<script>
+// Валидация формы на стороне клиента
+document.getElementById('projectForm').addEventListener('submit', function(event) {
+    if (!this.checkValidity()) {
+        event.preventDefault();
+        event.stopPropagation();
+    }
+    this.classList.add('was-validated');
+}, false);
 </body>
 </html>

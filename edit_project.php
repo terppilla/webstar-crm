@@ -33,11 +33,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <body>
 <div class="container mt-5">
     <h2>Редактировать проект</h2>
-    <form method="POST">
-        <div class="mb-3">
-            <label class="form-label">Название проекта*</label>
-            <input type="text" name="title" class="form-control" value="<?= htmlspecialchars($project['title']) ?>" required>
-        </div>
+    <form method="POST" id="editProjectForm" novalidate>
+    <div class="mb-3">
+        <label class="form-label">Название проекта*</label>
+        <input type="text" name="title" class="form-control" 
+               value="<?= htmlspecialchars($project['title']) ?>" 
+               required minlength="3" maxlength="100">
+        <div class="invalid-feedback">Название проекта должно содержать от 3 до 100 символов.</div>
+    </div>
         <div class="mb-3">
             <label class="form-label">Клиент*</label>
             <select name="client_id" class="form-select" required>
@@ -67,5 +70,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <button type="submit" class="btn btn-primary">Сохранить</button>
     </form>
 </div>
+<script>
+// Валидация формы на стороне клиента
+document.getElementById('editProjectForm').addEventListener('submit', function(event) {
+    if (!this.checkValidity()) {
+        event.preventDefault();
+        event.stopPropagation();
+    }
+    this.classList.add('was-validated');
+}, false);
+</script>
 </body>
 </html>
